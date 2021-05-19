@@ -1,0 +1,132 @@
+/* runtime styles */
+.cf-tinder-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0;
+    overflow: hidden;
+}
+
+.cf-tinder-grid__answers {
+    position: relative;
+    height: 320px;
+    width: 100%;
+}
+
+.cf-tinder-grid-answer {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    border: 3px solid #42bdd1;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    width: 240px;
+    left: 50%;
+    margin-left: -120px;
+
+    background-size: cover;
+    transition: transform .2s ease;
+}
+
+.cf-tinder-grid-answer--dragging {
+    transition: none;
+}
+.cf-tinder-grid-answer__other {
+    max-width: 100%;
+    width: 400px;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, .4);
+    border-radius: 0;
+    background-color: transparent;
+    font-size: inherit;
+    text-overflow: ellipsis;
+    height: 24px;
+    line-height: 20px;
+    padding: 0 0 3px 0;
+}
+
+.cf-tinder-grid-answer__text {
+    text-align: center;
+}
+
+.cf-tinder-grid__scales {
+    display: flex;
+    margin-top: 8px;
+}
+
+.cf-tinder-grid-scale {
+    margin: 0 10px;
+}
+
+.cf-tinder-grid-scale--selected{
+    color:  #42bdd1;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.rotate-right {
+    transform: rotate(30deg) scale(0.8);
+    transition: 1s;
+    margin-left: 400px;
+    cursor: e-resize;
+    opacity: 0;
+    z-index: 10;
+}
+
+.rotate-left {
+    transform: rotate(-30deg) scale(0.8);
+    transition: 1s;
+    margin-left: -400px;
+    cursor: w-resize;
+    opacity: 0;
+    z-index: 10;
+}
+
+.cf-tinder-grid-card-finish {
+    height: 100%;
+    width: 240px;
+
+    position: absolute;
+    left: 50%;
+    margin-left: -120px;
+}
+
+.circle{
+    opacity: 0;
+    stroke-dasharray: 130;
+    stroke-dashoffset: 130;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+.tick{
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    -webkit-transition: stroke-dashoffset 1s 0.5s ease-out;
+    -moz-transition: stroke-dashoffset 1s 0.5s ease-out;
+    -ms-transition: stroke-dashoffset 1s 0.5s ease-out;
+    -o-transition: stroke-dashoffset 1s 0.5s ease-out;
+    transition: stroke-dashoffset 1s 0.5s ease-out;
+}
+.draw + svg .path{
+    opacity: 1;
+    stroke-dashoffset: 0;
+}
+
+.hidden {
+    display: none !important;
+}
