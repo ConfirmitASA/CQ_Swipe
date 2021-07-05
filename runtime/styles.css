@@ -55,7 +55,14 @@
 
 .cf-tinder-grid__scales {
     display: flex;
+}
+
+.cf-tinder-grid__scales--below {
     margin-top: 8px;
+}
+
+.cf-tinder-grid__scales--above {
+    margin-bottom: 8px;
 }
 
 .cf-tinder-grid-scale {

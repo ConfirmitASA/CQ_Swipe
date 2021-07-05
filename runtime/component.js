@@ -1,5 +1,10 @@
 import TinderSwipe from "../dev/TinderSwipe";
 
+export const SCALES_POSITION = Object.freeze({
+  "below": "1",
+  "above": "2"
+});
+
 function TinderGridRenderer(question, customQuestionSettings) {
   this._getAnswerId = (answer) => `${question.id}_${answer.code}`;
   this._getAnswerTextId = (answer) => `${question.id}_${answer.code}_text`;
@@ -8,6 +13,7 @@ function TinderGridRenderer(question, customQuestionSettings) {
   this._getScaleTextId = (scale) => `${question.id}_scale_${scale.code}_text`;
 
   this.answerImagesURLs = customQuestionSettings.answerImages.urls;
+  this.scalesPosition = customQuestionSettings.scales.position;
 
   this._renderQuestion = () => {
     let content = '';
@@ -25,20 +31,39 @@ function TinderGridRenderer(question, customQuestionSettings) {
 
     const answerList = document.createElement("div");
     answerList.className = "cf-tinder-grid__answers";
+    let hasNonScaledAnswers = false;
+    const scaledAnswers = Object.keys(question.values);
     question.answers.forEach(answer => {
-      answerList.insertAdjacentElement("afterbegin", this._renderAnswer(answer));
+      if(!scaledAnswers.find(x => x === answer.code)) {
+        answerList.insertAdjacentElement("afterbegin", this._renderAnswer(answer));
+        hasNonScaledAnswers = true;
+      }
     });
     container.insertAdjacentElement("afterbegin", answerList);
 
     answerList.insertAdjacentElement("afterbegin", this._renderFinishCard());
 
-    //const scaleList = `<div class="cf-tinder-grid__scales">${question.scales.slice(0, 2).map(scale => this._renderScale(scale)).join('')}</div>`;
-    const scaleList = document.createElement("div");
-    scaleList.className = "cf-tinder-grid__scales";
-    question.scales.slice(0, 2).forEach(scale => {
-      scaleList.insertAdjacentElement("beforeend", this._renderScale(scale));
-    })
-    container.insertAdjacentElement("beforeend", scaleList);
+    if(!hasNonScaledAnswers) {
+      $(".cf-tinder-grid-card-finish__trigger").toggleClass("draw");
+    } else {
+      const scaleList = document.createElement("div");
+      scaleList.className = "cf-tinder-grid__scales";
+      question.scales.slice(0, 2).forEach(scale => {
+        scaleList.insertAdjacentElement("beforeend", this._renderScale(scale));
+      })
+      var insertPosition = "";
+      switch (this.scalesPosition) {
+        case SCALES_POSITION.above:
+          insertPosition = "afterbegin";
+          scaleList.className += " cf-tinder-grid__scales--above";
+          break;
+        case SCALES_POSITION.below:
+        default:
+          insertPosition = "beforeend";
+          scaleList.className += " cf-tinder-grid__scales--below";
+      }
+      container.insertAdjacentElement(insertPosition, scaleList);
+    }
   }
 
   this._renderAnswer = answer => {
