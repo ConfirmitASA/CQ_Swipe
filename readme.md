@@ -1,5 +1,5 @@
 # CQ_Swipe
-CustomQuestion with nodejs pipeline support.
+Card Swipe CustomQuestion with nodejs pipeline support.
 
 Commands:
 npm install 
