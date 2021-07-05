@@ -99,3 +99,20 @@ input#answerImagesEnabled {
     -webkit-transform: scale(4); /* Safari 3-8 */
     transform: scale(4) translateX(10px);
 }
+
+.comd-warning-block {
+    /*border-top: 1px solid red;
+    border-bottom: none;*/
+}
+
+.comd-warning__text {
+    font-size: 14px;
+    padding: 0.5em 0px;
+    color: red;
+}
+
+.node-properties {
+    padding: 20px 10px 0;
+    display: flex;
+    font-size: 13px;
+}

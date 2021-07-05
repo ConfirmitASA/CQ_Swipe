@@ -3,6 +3,7 @@ const QuestionWithAnswersView = Confirmit.pageView.questionViewTypes.QuestionWit
 export default class TinderSwipe extends QuestionWithAnswersView {
     constructor(question) {
         super(question);
+        //this.question = question;
         this._draggingAnswer = null;
         this._draggingAnswerNodeOffset = null;
         this._answerList = this._container.find('.cf-tinder-grid__answers');
@@ -17,6 +18,15 @@ export default class TinderSwipe extends QuestionWithAnswersView {
         }
         return `${this._question.id}_${answer.code}`;
     }
+
+    _getCurrentAnswerCode() {
+        if(this._currentAnswerIndex >= this.answers.length) {
+            return null;
+        }
+
+        return this.answers[this._currentAnswerIndex].code
+    }
+
 
     _getScaleNode(scaleCode){
         if(!scaleCode) {
@@ -51,6 +61,7 @@ export default class TinderSwipe extends QuestionWithAnswersView {
 
     _init(){
         this._attachHandlersToDom();
+        this._question.validationCompleteEvent.on(this._showAnswerError.bind(this));
     }
 
     _attachHandlersToDom(){
@@ -103,6 +114,28 @@ export default class TinderSwipe extends QuestionWithAnswersView {
     }
 
     _showAnswerError(validationResult) {
+        let currentAnswerCode = this._getCurrentAnswerCode();
+        if(!currentAnswerCode || validationResult.answerCode !== currentAnswerCode) {
+            return;
+        }
+        let errorList = document.getElementById(`${this._question.id}_error_list`);
+        let errorsCount = validationResult.errors.length;
+        if(errorsCount > 0) {
+            errorList.parentElement.classList.remove("cf-error-block--hidden");
+            validationResult.errors.forEach(error => {
+                    let errorItem = this._createErrorListItem(error.message);
+                    errorList.appendChild(errorItem);
+                }
+            );
+        }
+    }
+
+    _createErrorListItem(message) {
+        let item = document.createElement('li');
+        item.className += "cf-error-list__item";
+        item.innerText = message;
+
+        return item;
     }
 
     _moveAnswerStart(xCoord){
@@ -159,7 +192,6 @@ export default class TinderSwipe extends QuestionWithAnswersView {
 
         if(selectedScaleCode !== null){
             this._question.setValue(this._draggingAnswer.code, selectedScaleCode);
-            //this._answerList.prepend(draggingNode);
             draggingNode.remove();
         }
 
