@@ -3,11 +3,15 @@
   <head>
     <link rel="stylesheet" href="styles.css?version=1"/>
     <link rel="stylesheet" href="design-page-styles.css"/>
-    <script type="text/javascript" src="click-handlers.js?version=1"></script>
-    <script type="text/javascript" src="design-page-components.js"></script>
+    <script src="design-page-components.js"></script>
   </head>
   <body>
     <main>
+      <div class="comd-warning-block warning-block--scales-count hidden">
+        <div class="comd-warning__text">
+          It seems like you added more than two scales which is not recommended.
+        </div>
+      </div>
       <div class="comd-panel node-property node-properties-key-fields node-property--answer-images">
         <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
           <div class="node-properties__toggle co-flex co-flex--center">
@@ -19,22 +23,47 @@
           </div>
         </header>
         <div class="comd-panel__collapse-area node-property__content node-property__content--answer-images">
-          <div class="setting-row">
-            <div class="co-toggle co-toggle--checkbox">
-              <input class="co-toggle__input node-property__checkbox" type="checkbox" id="answerImagesEnabled"/>
-              <label for="answerImagesEnabled" class="node-property__label node-property__label--checkbox">
-                <div class="icon icon-checkbox co-icon">
-                </div>
-                <span>Enabled</span>
-              </label>
-            </div>
-          </div>
-          <div class="setting-col node-property__sub-content hidden">
+          <div class="setting-col node-properties node-property__sub-content">
             <div class="setting-row">
               <label class="node-property__label">Images for answers:</label>
             </div>
             <div class="setting-row">
               <div id="imagesContainer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="comd-panel node-property node-properties-key-fields node-property--scales">
+        <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
+          <div class="node-properties__toggle co-flex co-flex--center">
+            <h4 class="co-text-size-normal">Scales</h4>
+            <div class="sd-tooltip-help" data-tooltip-text=""></div>
+          </div>
+          <div class="co-flex co-flex--center">
+            <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
+          </div>
+        </header>
+        <div class="comd-panel__collapse-area node-property__content node-property__content--scales">
+          <div class="setting-col node-properties node-property__sub-content">
+            <div class="setting-row">
+              <div class="setting-col">
+                <label class="node-property__label" for="scalesPosition">Scales position <div class="sd-tooltip-help" data-tooltip-text="Display the scales above or below the cards."></div></label>
+                <select class="form-control form-input" id="scalesPosition" name="scalesPosition">
+                  <option value="1" selected="selected">Below the cards</option>
+                  <option value="2">Above the cards</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <div class="co-toggle">
+                <input class="co-toggle__input node-property__checkbox" type="checkbox" id="areScalesClickable"/>
+                <label for="areScalesClickable" class="node-property__label node-property__label--checkbox">
+                  <div class="icon icon-checkbox co-icon">
+                  </div>
+                  <span>Make scales clickable</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -46,99 +75,5 @@
     </div>
     <script src="custom-question-bridge.js"></script>
     <script src="index.js"></script>
-    <script>
-      var answers;
-      var scales;
-
-      var answerImagesInputs;
-      var answerImagesEnabled = document.getElementById('answerImagesEnabled');
-
-      customQuestion.onInit = getInitSettings;
-
-      function getInitSettings(customSettings, uiSettings, questionSettings, projectSettings) {
-        answers = questionSettings.answers;
-        scales = questionSettings.scales;
-
-        renderAnswerImageInputs();
-        document.querySelectorAll(".image-input--answer").forEach((input) => {
-          input.addEventListener("input", loadImagePreview);
-        });
-
-        answerImagesInputs = document.querySelectorAll('.image-input--answer');
-        console.log("on init");
-      }
-
-      function setValues(settings) {
-        answerImagesEnabled.checked = settings.answerImages.isEnabled;
-        //hideSubsectionAfterBoxChecked(answerImagesEnabled); TODO: throws error
-
-        const imageUrls = settings.answerImages.urls;
-        answerImagesInputs.forEach((input) => {
-          var pair = imageUrls.find(pair => pair.id === input.id);
-          if(pair) {
-            input.value = pair.url;
-          }
-        })
-      }
-
-      function saveChanges() {
-        var imgURLs = [];
-
-        answerImagesInputs.forEach((input) => {
-          imgURLs.push({id: input.id, url: input.value});
-        });
-        
-        var settings = {
-          answerImages: {
-            isEnabled: answerImagesEnabled.checked,
-            urls: imgURLs
-          } };
-
-        hasError = false;
-        customQuestion.saveChanges(settings, hasError);
-      }
-
-      customQuestion.onSettingsReceived = setValues;
-
-      var containers = Array.prototype.slice.call(document.querySelectorAll(".comd-panel"));
-      for (var c = 0; c < containers.length; c++) {
-        containers[c].addEventListener('input', saveChanges, true);
-      }
-
-      function renderAnswerImageInputs() {
-        var imageContainer = document.getElementById("imagesContainer");
-        answers.forEach((answer) => {
-          var imageContainerNode = createImageContainerNode(answer.code);
-          imageContainer.insertAdjacentElement("beforeend", imageContainerNode);
-        });
-      }
-
-      function createImageContainerNode(answerCode) {
-        var container = document.createElement("div");
-        container.className = "image-container";
-        container.innerHTML = `${answerCode}: `;
-
-        var imageURLInput = document.createElement("input");
-        imageURLInput.id = `image_${answerCode}`;
-        imageURLInput.className = "form-control input-sm form-input image-input image-input--answer";
-
-        container.insertAdjacentElement("beforeend", imageURLInput);
-
-        var imagePreview = document.createElement('img');
-        imagePreview.className = "image-preview";
-
-        container.insertAdjacentElement("beforeend", imagePreview);
-
-        return container;
-      }
-
-      function loadImagePreview(e) {
-        const inputElement = e.target;
-        const inputURL = inputElement.value;
-
-        const previewContainer = document.querySelector("#" + inputElement.id + " + img");
-        previewContainer.setAttribute("src", inputURL);
-      }
-    </script>
   </body>
 </html>
