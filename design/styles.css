@@ -137,3 +137,7 @@ input#useImagesForCards {
     color: #cccccc;
     text-shadow: 0 0 4px #aaaaaa;
 }
+
+.image-type-settings {
+    width: 50%;
+}

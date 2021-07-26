@@ -1,5 +1,3 @@
-import {ICONS, SVG_CONTAINER} from './Constants';
-
 export const SCALES_POSITION = Object.freeze({
     "below": "1",
     "above": "2"
@@ -23,6 +21,7 @@ export default class Scale {
         this.type = settings.type;
         this.textTypeSettings = settings.textTypeSettings;
         this.buttonTypeSettings = settings.buttonTypeSettings;
+        this.imageTypeSettings = settings.imageTypeSettings;
     }
 
     _getScaleId = (scale) => `${this.question.id}_scale_${scale.code}`;
@@ -41,17 +40,33 @@ export default class Scale {
         return scaleNode;
     }
 
-
     render() {
         const container = document.querySelector('#' + this.question.id + ' .cf-tinder-grid');
 
         const scaleList = document.createElement("div");
         scaleList.className = "cf-tinder-grid__scales";
         scaleList.style.maxWidth = this.containerMaxWidth + 'px';
-        this.usedScales.forEach(scale => {
-            scaleList.insertAdjacentElement("beforeend", this._createScaleElement(scale));
+
+        const leftScale = this.usedScales[0];
+        const rightScale = this.usedScales[1];
+        const leftScaleContainer = this._createScaleContainerElement(leftScale);
+        const rightScaleContainer = this._createScaleContainerElement(rightScale);
+        const scaleContainers = [leftScaleContainer, rightScaleContainer];
+
+        if(this.type === SCALES_TYPE.image) {
+            this._addScaleContentToContainer_TypeImage(leftScaleContainer, leftScale, 'left');
+            this._addScaleContentToContainer_TypeImage(rightScaleContainer, rightScale, 'right');
+        } else {
+            this._addScaleContentToContainer(leftScaleContainer, leftScale);
+            this._addScaleContentToContainer(rightScaleContainer, rightScale);
+        }
+
+        scaleContainers.forEach(scaleContainer => {
+            this._applyStyleAccordingToType(scaleContainer);
+            scaleList.insertAdjacentElement("beforeend", scaleContainer);
         });
-        var insertPosition = "";
+
+        let insertPosition = "";
         switch (this.scalesPosition) {
             case SCALES_POSITION.above:
                 insertPosition = "afterbegin";
@@ -66,7 +81,7 @@ export default class Scale {
         this._attachHandlersAccordingToType();
     }
 
-    _createScaleElement = (scale) => {
+    _createScaleContainerElement = (scale) => {
         let selected = "";
         const values = Object.entries(this.question.values);
 
@@ -78,32 +93,38 @@ export default class Scale {
         scaleContainer.className = `cf-tinder-grid-scale ${selected}`;
         scaleContainer.classList.add('cf-tinder-grid-scale--' + this.type);
         scaleContainer.id = this._getScaleId(scale);
-        this._applyStyleAccordingToType(scaleContainer);
-
-        let scaleContent;
-
-        if(this.type === SCALES_TYPE.image) {
-            scaleContent = document.createElement("span");
-            scaleContent.className = "fa-stack fa-2x";
-            let heart = document.createElement("i");
-            heart.className = "fa fa-heart fa-stack-1x";
-            heart.style.color = "pink";
-            let circle = document.createElement("i");
-            circle.className = "fa fa-circle fa-stack-2x";
-            circle.style.color = "#F6F6F6";
-            scaleContent.insertAdjacentElement("afterbegin", heart);
-            scaleContent.insertAdjacentElement("afterbegin", circle);
-        }
-        else {
-            scaleContent = document.createElement("div");
-            scaleContent.className = "cf-tinder-grid-scale__text noselect";
-            scaleContent.id = this._getScaleTextId(scale);
-            scaleContent.innerHTML = scale.text;
-        }
-
-        scaleContainer.insertAdjacentElement("afterbegin", scaleContent);
 
         return scaleContainer;
+    }
+
+    _addScaleContentToContainer(container, scale) {
+        let scaleContent;
+
+        scaleContent = document.createElement("div");
+        scaleContent.className = "cf-tinder-grid-scale__text noselect";
+        scaleContent.id = this._getScaleTextId(scale);
+        scaleContent.innerHTML = scale.text;
+
+        container.insertAdjacentElement("afterbegin", scaleContent);
+    }
+
+    _addScaleContentToContainer_TypeImage(container, scale, position) {
+        let settings = position === 'left' ? this.imageTypeSettings.left : this.imageTypeSettings.right;
+
+        let scaleContent;
+        scaleContent = document.createElement("span");
+        scaleContent.className = "fa-stack fa-2x";
+        let icon = document.createElement("i");
+
+        icon.className = `fa fa-${settings.image} fa-stack-1x`;
+        icon.style.color = settings.iconColor;
+        let circle = document.createElement("i");
+        circle.className = "fa fa-circle fa-stack-2x";
+        circle.style.color = settings.bgColor;
+        scaleContent.insertAdjacentElement("afterbegin", icon);
+        scaleContent.insertAdjacentElement("afterbegin", circle);
+
+        container.insertAdjacentElement("afterbegin", scaleContent);
     }
 
     _applyStyleAccordingToType(scaleContainer) {

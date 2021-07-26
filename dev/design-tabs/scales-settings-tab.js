@@ -10,6 +10,10 @@ export const ScalesSettingsTabInputSelectors = {
     typeButtonSelectedFontColor: '#scaleTypeButtonSelectedFontColor',
     typeButtonBgColor: '#scaleTypeButtonBgColor',
     typeButtonHoverBgColor: '#scaleTypeButtonHoverBgColor',
+    typeImageIconColorLeft: '#scaleTypeImageIconColor--left',
+    typeImageIconColorRight: '#scaleTypeImageIconColor--right',
+    typeImageBgColorLeft: '#scaleTypeImageBgColor--left',
+    typeImageBgColorRight: '#scaleTypeImageBgColor--right'
 }
 
 export default class ScalesSettingsTab {
@@ -115,9 +119,24 @@ export default class ScalesSettingsTab {
     }
 
     _setImageTypeSettingsPositionWise = (imageTypeSettingsForPosition, scalePosition) => {
+        let iconColorInput, bgColorInput;
+        if(scalePosition === 'left') {
+            iconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorLeft];
+            bgColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorLeft];
+        }
+        if(scalePosition === 'right') {
+            iconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorRight];
+            bgColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorRight];
+        }
         if(imageTypeSettingsForPosition.hasOwnProperty('image') && imageTypeSettingsForPosition.image !== undefined) {
             document.querySelector(`#scaleImage--${scalePosition}__${imageTypeSettingsForPosition.image}`)
                 .classList.add('scale-icon-picker--selected');
+        }
+        if(imageTypeSettingsForPosition.hasOwnProperty('iconColor') && imageTypeSettingsForPosition.iconColor !== undefined) {
+            iconColorInput.value = imageTypeSettingsForPosition.iconColor;
+        }
+        if(imageTypeSettingsForPosition.hasOwnProperty('bgColor') && imageTypeSettingsForPosition.bgColor !== undefined) {
+            bgColorInput.value = imageTypeSettingsForPosition.bgColor;
         }
     }
 
@@ -140,7 +159,14 @@ export default class ScalesSettingsTab {
             },
             imageTypeSettings: {
                 left: {
-                    image: this._getSelectedScaleImage('left')
+                    image: this._getSelectedScaleImage('left'),
+                    iconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorLeft].value,
+                    bgColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorLeft].value
+                },
+                right: {
+                    image: this._getSelectedScaleImage('right'),
+                    iconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorRight].value,
+                    bgColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorRight].value
                 }
             }
         }
