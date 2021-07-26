@@ -3,6 +3,7 @@
   <head>
     <link rel="stylesheet" href="styles.css?version=1"/>
     <link rel="stylesheet" href="design-page-styles.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <script src="design-page-components.js"></script>
   </head>
   <body>
@@ -12,23 +13,56 @@
           It seems like you added more than two scales which is not recommended.
         </div>
       </div>
-      <div class="comd-panel node-property node-properties-key-fields node-property--answer-images">
+      <div class="comd-panel node-property node-properties-key-fields node-property--card-images">
         <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
           <div class="node-properties__toggle co-flex co-flex--center">
-            <h4 class="co-text-size-normal">Images as answers</h4>
-            <div class="sd-tooltip-help" data-tooltip-text="Use images in answer cards. Can be used as backgrounds for texts that you set in Edit tab (Prompt labels)."></div>
+            <h4 class="co-text-size-normal">Cards</h4>
           </div>
           <div class="co-flex co-flex--center">
             <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
           </div>
         </header>
-        <div class="comd-panel__collapse-area node-property__content node-property__content--answer-images">
-          <div class="setting-col node-properties node-property__sub-content">
+        <div class="comd-panel__collapse-area node-property__content node-property__content--cards">
+          <div class="node-properties setting-col">
             <div class="setting-row">
-              <label class="node-property__label">Images for answers:</label>
+              <div class="setting-col card__size">
+                <label class="node-property__label" for="cardHeight">Height</label>
+                <div class="setting-row">
+                  <input class="form-control input-sm form-input" type="text" id="cardHeight" value="320"/>
+                  <span class="node-property__after node-property__after--card" for="cardHeight">px</span>
+                </div>
+              </div>
+              <div class="setting-col card__size">
+                <label class="node-property__label" for="cardWidth">Width</label>
+                <div class="setting-row">
+                  <input class="form-control input-sm form-input" type="text" id="cardWidth" value="240"/>
+                  <span class="node-property__after node-property__after--card" for="cardWidth">px</span>
+                </div>
+              </div>
+            </div>
+            <div class="setting-row card__font-color">
+              <label class="node-property__label" for="cardFontColor">Font color:</label>
+              <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="cardFontColor" type="color" name="cardFontColor" value="#EEEEEE"/></div>
+            </div>
+            <div class="setting-row card__bg-color">
+                <label class="node-property__label" for="cardBgColor">Background color:</label>
+                <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="cardBgColor" type="color" name="cardBgColor" value="#000000"/></div>
             </div>
             <div class="setting-row">
-              <div id="imagesContainer"></div>
+              <div class="co-toggle">
+                <input class="co-toggle__input node-property__checkbox" type="checkbox" id="useImagesForCards"/>
+                <label for="useImagesForCards" class="node-property__label node-property__label--checkbox">
+                  <div class="icon icon-checkbox co-icon">
+                  </div>
+                  <span>Use images</span>
+                </label>
+              </div>
+            </div>
+            <div class="setting-row node-property__images-for-cards node-property__collapse-area controlled-by--useImagesForCards hidden">
+              <div class="setting-col">
+                <label class="node-property__label">Image links:</label>
+                <div id="cardImagesContainer"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -37,34 +71,130 @@
         <header class="node-properties__header co-flex co-flex--justify-between co-flex--center">
           <div class="node-properties__toggle co-flex co-flex--center">
             <h4 class="co-text-size-normal">Scales</h4>
-            <div class="sd-tooltip-help" data-tooltip-text=""></div>
           </div>
           <div class="co-flex co-flex--center">
             <button class="collapse-button comd-icon-button comd-panel__toggle--icon-button"></button>
           </div>
         </header>
         <div class="comd-panel__collapse-area node-property__content node-property__content--scales">
-          <div class="setting-col node-properties node-property__sub-content">
+          <div class="node-properties setting-col">
             <div class="setting-row">
               <div class="setting-col">
-                <label class="node-property__label" for="scalesPosition">Scales position <div class="sd-tooltip-help" data-tooltip-text="Display the scales above or below the cards."></div></label>
+                <label class="node-property__label" for="scalesPosition">Position <div class="sd-tooltip-help" data-tooltip-text="Display the scales above or below the cards."></div></label>
                 <select class="form-control form-input" id="scalesPosition" name="scalesPosition">
                   <option value="1" selected="selected">Below the cards</option>
                   <option value="2">Above the cards</option>
                 </select>
               </div>
             </div>
+<!--            <div class="setting-row">-->
+<!--              <div class="co-toggle">-->
+<!--                <input class="co-toggle__input node-property__checkbox" type="checkbox" id="scalesAsButtons"/>-->
+<!--                <label for="scalesAsButtons" class="node-property__label node-property__label&#45;&#45;checkbox">-->
+<!--                  <div class="icon icon-checkbox co-icon">-->
+<!--                  </div>-->
+<!--                  <span>Scales as buttons</span>-->
+<!--                </label>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="setting-row node-property__scales-as-buttons node-property__collapse-area controlled-by&#45;&#45;scalesAsButtons hidden">-->
+<!--              <div class="setting-col">-->
+<!--                <label class="node-property__label">Settings:</label>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="setting-row">
-              <div class="co-toggle">
-                <input class="co-toggle__input node-property__checkbox" type="checkbox" id="areScalesClickable"/>
-                <label for="areScalesClickable" class="node-property__label node-property__label--checkbox">
-                  <div class="icon icon-checkbox co-icon">
+            <div class="node-property node-property--radio node-property--scales-type">
+              <h4>Type of scales:</h4>
+              <ul class="option-list">
+                <li class="option-toggle">
+                  <div class="co-toggle co-toggle--radio">
+                    <input class="co-toggle__input scales-type" id="textOption" type="radio" name="scales-type" checked="" value="text">
+                    <label for="textOption" class="node-property__label node-property__label--radio">
+                      <div class="icon-radio co-icon"></div>
+                      <span>Text</span>
+                    </label>
                   </div>
-                  <span>Make scales clickable</span>
-                </label>
+                </li>
+                <li class="option-toggle">
+                  <div class="co-toggle co-toggle--radio">
+                    <input class="co-toggle__input scales-type" id="buttonOption" name="scales-type" type="radio" value="button">
+                    <label for="buttonOption" class="node-property__label node-property__label--radio">
+                      <div class="icon-radio co-icon"></div>
+                      <span>Buttons</span>
+                    </label>
+                  </div>
+                </li>
+                <li class="option-toggle">
+                  <div class="co-toggle co-toggle--radio">
+                    <input class="co-toggle__input scales-type" id="imageOption" name="scales-type" type="radio" value="image">
+                    <label for="imageOption" class="node-property__label node-property__label--radio">
+                      <div class="icon-radio co-icon"></div>
+                      <span>Images</span>
+                    </label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="setting-col node-property__scales-type-settings node-property__scales-type-settings--text node-property__collapse-area controlled-by--textOption hidden">
+              <div class="setting-row">
+                <div class="setting-row scale-type-text__font-color">
+                  <label class="node-property__label" for="scaleTypeTextFontColor">Font color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeTextFontColor" type="color" name="scaleTypeTextFontColor" value="#000000"/></div>
+                </div>
+                <div class="setting-row scale-type-text__selected-font-color">
+                  <label class="node-property__label" for="scaleTypeTextSelectedFontColor">Selected font color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeTextSelectedFontColor" type="color" name="scaleTypeTextSelectedFontColor" value="#42BDD1"/></div>
+                </div>
               </div>
             </div>
+            <div class="setting-col node-property__scales-type-settings node-property__scales-type-settings--button node-property__collapse-area controlled-by--buttonOption hidden">
+              <div class="setting-row">
+                <div class="setting-row scale-type-button__font-color">
+                  <label class="node-property__label" for="scaleTypeButtonFontColor">Font color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeButtonFontColor" type="color" name="scaleTypeButtonFontColor" value="#A8A8A8"/></div>
+                </div>
+                <div class="setting-row scale-type-button__selected-font-color">
+                  <label class="node-property__label" for="scaleTypeButtonSelectedFontColor">Selected font color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeButtonSelectedFontColor" type="color" name="scaleTypeButtonSelectedFontColor" value="#FFFFFF"/></div>
+                </div>
+              </div>
+              <div class="setting-row">
+                <div class="setting-row scale-type-button__bg-color">
+                  <label class="node-property__label" for="scaleTypeButtonBgColor">Background color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeButtonBgColor" type="color" name="scaleTypeButtonBgColor" value="#EEEEEE"/></div>
+                </div>
+                <div class="setting-row scale-type-button__hover-bg-color">
+                  <label class="node-property__label" for="scaleTypeButtonHoverBgColor">On hover background color:</label>
+                  <div class="value__option-input value__option-input--color"><input class="form-control form-input form-input--color" id="scaleTypeButtonHoverBgColor" type="color" name="scaleTypeButtonHoverBgColor" value="#42BDD1"/></div>
+                </div>
+              </div>
+            </div>
+            <div class="setting-col node-property__scales-type-settings node-property__scales-type-settings--image node-property__collapse-area controlled-by--imageOption hidden">
+              <div class="setting-row">
+                <label class="node-property__label">Left scale:</label>
+              </div>
+              <div class="node-property node-property--left-scale-image">
+                <label class="node-property__label">Image:</label>
+                <span id="scaleImage--left__heart" class="scale-icon-picker fa-stack fa-lg">
+                  <i class="scale-icon-picker__bg fa fa-square fa-stack-2x"></i>
+                  <i class="scale-icon-picker__icon fa fa-heart fa-stack-1x"></i>
+                </span>
+                <span id="scaleImage--left__x" class="scale-icon-picker fa-stack fa-lg">
+                  <i class="scale-icon-picker__bg fa fa-square fa-stack-2x"></i>
+                  <i class="scale-icon-picker__icon fa fa-remove fa-stack-1x"></i>
+                </span>
+                <span id="scaleImage--left__thumbs-up" class="scale-icon-picker fa-stack fa-lg">
+                  <i class="scale-icon-picker__bg fa fa-square fa-stack-2x"></i>
+                  <i class="scale-icon-picker__icon fa fa-thumbs-up fa-stack-1x"></i>
+                </span>
+                <span id="scaleImage--left__thumbs-down" class="scale-icon-picker fa-stack fa-lg">
+                  <i class="scale-icon-picker__bg fa fa-square fa-stack-2x"></i>
+                  <i class="scale-icon-picker__icon fa fa-thumbs-down fa-stack-1x"></i>
+                </span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

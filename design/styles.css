@@ -29,11 +29,21 @@ body{
     cursor: pointer;
     margin-bottom: 5px;
 }
+.node-property__after--card {
+    padding-top: 5px;
+}
 .hidden {
     display: none !important;
 }
-input#answerImagesEnabled {
+input#useImagesForCards {
     width: 20px;
+}
+.card__size {
+    margin-right: 20px;
+}
+.card__size input{
+    margin-right: 5px;
+    width: 50px;
 }
 .node-property__checkbox-label {
     font-size: 15px;
@@ -42,6 +52,9 @@ input#answerImagesEnabled {
 .value__option-header {
     font-size: 12px !important;
     font-weight: 600;
+}
+.value__option-input--color {
+    margin: 5px 10px;
 }
 .setting-col, .setting-row {
     display: flex;
@@ -71,9 +84,6 @@ input#answerImagesEnabled {
 }
 .form-input--8ch {
     width: calc(8ch + 30px);
-}
-.value__option-header input, .value__option-input input{
-    width: 100%;
 }
 
 .co-toggle {
@@ -111,8 +121,19 @@ input#answerImagesEnabled {
     color: red;
 }
 
-.node-properties {
-    padding: 20px 10px 0;
-    display: flex;
-    font-size: 13px;
+.scale-icon-picker {
+    cursor: pointer;
+}
+
+.scale-icon-picker__bg {
+    color: #eeeeee;
+}
+
+.scale-icon-picker:hover > .scale-icon-picker__bg:not(.scale-icon-picker--selected){
+    color: #dddddd;
+}
+
+.scale-icon-picker--selected > .scale-icon-picker__bg{
+    color: #cccccc;
+    text-shadow: 0 0 4px #aaaaaa;
 }

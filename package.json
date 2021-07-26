@@ -16,10 +16,13 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
+    "bestzip": "^2.1.7",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "bestzip": "^2.1.7",
     "parcel-bundler": "^1.12.4",
     "rimraf": "^2.7.1"
+  },
+  "dependencies": {
+    "bootstrap-icons": "^1.5.0"
   }
 }

@@ -75,35 +75,28 @@ export default class TinderSwipe extends QuestionWithAnswersView {
 
         //TODO: only need this block to run if scales are set to work as buttons in custom settings
         const usedScales = this._question.scales.slice(0, 2);
-        this._getScaleNode(usedScales[0].code).on('click', () => this._onLeftScaleClick());
-        this._getScaleNode(usedScales[1].code).on('click', () => this._onRightScaleClick());
-        this._question.scales.forEach(scale => {
-            const scaleNode = this._getScaleNode(scale.code);
-            scaleNode.hover(
-                () => { scaleNode.addClass('cf-tinder-grid-scale--selected');
-                        scaleNode[0].style.cursor = "pointer"; },
-                () => {scaleNode.removeClass('cf-tinder-grid-scale--selected')});
-        });
+        this._getScaleNode(usedScales[0].code).on('click', () => this._onLeftScaleClick(usedScales[0].code));
+        this._getScaleNode(usedScales[1].code).on('click', () => this._onRightScaleClick(usedScales[1].code));
 
         $(document).on('mousemove touchmove', this._onDocumentDrag.bind(this));
         $(document).on('mouseup touchend', this._onDocumentDrop.bind(this));
     }
 
-    _onScaleClick(scale, rotationClassName) {
+    _onScaleClick(scaleCode, rotationClassName) {
         const currentAnswerNode = this._getCurrentAnswerNode();
         if(!currentAnswerNode) {
             return;
         }
-        currentAnswerNode.addClass(rotationClassName).delay(700).fadeOut(1);
-        this._currentAnswerIndex++;
+        currentAnswerNode.addClass(rotationClassName);
+        this._question.setValue(this._getCurrentAnswerCode(), scaleCode);
     }
 
-    _onLeftScaleClick(scale) {
-        this._onScaleClick(scale, 'rotate-left');
+    _onLeftScaleClick(scaleCode) {
+        this._onScaleClick(scaleCode, 'rotate-left');
     }
 
-    _onRightScaleClick(scale) {
-        this._onScaleClick(scale, 'rotate-right');
+    _onRightScaleClick(scaleCode) {
+        this._onScaleClick(scaleCode, 'rotate-right');
     }
 
     _updateAnswerOtherNodes({otherValues = []}) {
@@ -255,26 +248,11 @@ export default class TinderSwipe extends QuestionWithAnswersView {
                     this._getScaleNode(scale.code).addClass('hidden');
                 });
             }
-
-            // if(currentIndex === this.answers.length - 1) {
-            //     this._currentAnswerIndex = 0;
-            //     this._showFinalCard();
-            // }
-            // else {
-            //     this._currentAnswerIndex = currentIndex + 1;
-            // }
-
-            // [
-            //     ...this.answers.slice(this._currentAnswerIndex, this.answers.length),
-            //     ... this.answers.slice(0, this._currentAnswerIndex)
-            // ].forEach(answer => {
-            //     this._answerList.prepend(this._getAnswerNode(answer.code));
-            // })
         });
     }
 
     _showFinalCard(){
-        $(".cf-tinder-grid-card-finish__trigger").toggleClass("draw");
+        $(".cf-tinder-grid-card--finish__trigger").toggleClass("draw");
     }
 
     _onModelValueChange({changes}){

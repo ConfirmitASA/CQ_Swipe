@@ -1,9 +1,7 @@
 import TinderSwipe from "../dev/TinderSwipe";
-
-export const SCALES_POSITION = Object.freeze({
-  "below": "1",
-  "above": "2"
-});
+import Card from "../dev/Card";
+import Scale from "../dev/Scale";
+import SCALES_POSITION from "../dev/Scale";
 
 function TinderGridRenderer(question, customQuestionSettings) {
   this._getAnswerId = (answer) => `${question.id}_${answer.code}`;
@@ -12,7 +10,7 @@ function TinderGridRenderer(question, customQuestionSettings) {
   this._getScaleId = (scale) => `${question.id}_scale_${scale.code}`;
   this._getScaleTextId = (scale) => `${question.id}_scale_${scale.code}_text`;
 
-  this.answerImagesURLs = customQuestionSettings.answerImages.urls;
+  this.answerImagesURLs = customQuestionSettings.cards.urls;
   this.scalesPosition = customQuestionSettings.scales.position;
 
   this._renderQuestion = () => {
@@ -27,64 +25,16 @@ function TinderGridRenderer(question, customQuestionSettings) {
   this._renderQuestionContent = () => {
     document.querySelector('#' + question.id + ' .cf-question__content').innerHTML = '<div class="cf-tinder-grid"></div>';
     const container = document.querySelector('#' + question.id + ' .cf-tinder-grid');
-    //const answerList = `<div class="cf-tinder-grid__answers">${question.answers.map(answer => this._renderAnswer(answer)).reverse().join('')}</div>`;
+    
+    var cardsRenderer = new Card(question, customQuestionSettings);
+    cardsRenderer.renderCards();
 
-    const answerList = document.createElement("div");
-    answerList.className = "cf-tinder-grid__answers";
-    let hasNonScaledAnswers = false;
-    const scaledAnswers = Object.keys(question.values);
-    question.answers.forEach(answer => {
-      if(!scaledAnswers.find(x => x === answer.code)) {
-        answerList.insertAdjacentElement("afterbegin", this._renderAnswer(answer));
-        hasNonScaledAnswers = true;
-      }
-    });
-    container.insertAdjacentElement("afterbegin", answerList);
-
-    answerList.insertAdjacentElement("afterbegin", this._renderFinishCard());
-
-    if(!hasNonScaledAnswers) {
+    if(!cardsRenderer._hasNonScaledAnswers()) {
       $(".cf-tinder-grid-card-finish__trigger").toggleClass("draw");
     } else {
-      const scaleList = document.createElement("div");
-      scaleList.className = "cf-tinder-grid__scales";
-      question.scales.slice(0, 2).forEach(scale => {
-        scaleList.insertAdjacentElement("beforeend", this._renderScale(scale));
-      })
-      var insertPosition = "";
-      switch (this.scalesPosition) {
-        case SCALES_POSITION.above:
-          insertPosition = "afterbegin";
-          scaleList.className += " cf-tinder-grid__scales--above";
-          break;
-        case SCALES_POSITION.below:
-        default:
-          insertPosition = "beforeend";
-          scaleList.className += " cf-tinder-grid__scales--below";
-      }
-      container.insertAdjacentElement(insertPosition, scaleList);
+      var scalesRenderer = new Scale(question, customQuestionSettings.scales);
+      scalesRenderer.render();
     }
-  }
-
-  this._renderAnswer = answer => {
-    let answerContent = '';
-    if (answer.isOther) {
-      answerContent += `<input class="cf-tinder-grid-answer__other" placeholder="${answer.text}" id="${this._getAnswerOtherTextId(answer)}" type="text" value="${question.otherValues[answer.code] || ""}"/>`;
-    } else {
-      answerContent += `<div class="cf-tinder-grid-answer__text noselect" id="${this._getAnswerTextId(answer)}">${answer.text}</div>`
-    }
-
-    let answerImagePair = this.answerImagesURLs.find(pair => pair.id === "image_" + answer.code); //TODO: Add function for constructing pair.id from answer.code OR change pair.id to == answer.code not "image_{answer.code}"
-
-    let answerContainer = document.createElement("div");
-    answerContainer.className = "cf-tinder-grid-answer";
-    answerContainer.id = this._getAnswerId(answer);
-    if(answerImagePair) {
-      answerContainer.style.backgroundImage = `url('${answerImagePair.url}')`;
-    }
-    answerContainer.innerHTML = answerContent;
-
-    return answerContainer;
   }
 
   this._renderScale = (scale) => {

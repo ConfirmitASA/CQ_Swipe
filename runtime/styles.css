@@ -13,27 +13,32 @@
     width: 100%;
 }
 
-.cf-tinder-grid-answer {
+.cf-tinder-grid-card {
     height: 100%;
-    overflow: hidden;
-    position: absolute;
-    border: 3px solid #42bdd1;
-    border-radius: 10px;
-    padding: 10px;
+
     display: flex;
+    position: absolute;
+    left: 50%;
+
+    padding: 10px;
     justify-content: center;
     align-items: center;
-    background: #fff;
-    width: 240px;
-    left: 50%;
-    margin-left: -120px;
 
     background-size: cover;
+}
+
+.cf-tinder-grid-answer {
+    border: 3px solid #42bdd1;
+    border-radius: 10px;
+    background-color: #ffffff;
+    overflow: hidden;
+    cursor: grab;
     transition: transform .2s ease;
 }
 
 .cf-tinder-grid-answer--dragging {
     transition: none;
+    cursor: grabbing;
 }
 .cf-tinder-grid-answer__other {
     max-width: 100%;
@@ -55,6 +60,8 @@
 
 .cf-tinder-grid__scales {
     display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .cf-tinder-grid__scales--below {
@@ -67,10 +74,18 @@
 
 .cf-tinder-grid-scale {
     margin: 0 10px;
+    cursor: pointer;
 }
 
 .cf-tinder-grid-scale--selected{
     color:  #42bdd1;
+}
+
+.cf-tinder-grid-scale--button {
+    border-radius: 5px;
+    padding: 0.3em 0.5em;
+    width: 50%;
+    text-align: center;
 }
 
 .noselect {
@@ -84,30 +99,23 @@
 }
 
 .rotate-right {
-    transform: rotate(30deg) scale(0.8);
-    transition: 1s;
-    margin-left: 400px;
+    transform: translate(400px) rotate(30deg) scale(0.8);
+    transition: 600ms;
     cursor: e-resize;
     opacity: 0;
     z-index: 10;
 }
 
 .rotate-left {
-    transform: rotate(-30deg) scale(0.8);
-    transition: 1s;
-    margin-left: -400px;
+    transform: translate(-400px) rotate(-30deg) scale(0.8);
+    transition: 600ms;
     cursor: w-resize;
     opacity: 0;
     z-index: 10;
 }
 
-.cf-tinder-grid-card-finish {
-    height: 100%;
-    width: 240px;
-
-    position: absolute;
-    left: 50%;
-    margin-left: -120px;
+.cf-tinder-grid-card--finish svg {
+    align-self: normal;
 }
 
 .circle{

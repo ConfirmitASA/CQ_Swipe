@@ -1,0 +1,230 @@
+export const ScalesSettingsTabInputSelectors = {
+    position: '#scalesPosition',
+    containerWidth: '#cardWidth',
+    typeText: '#textOption',
+    typeButton: '#buttonOption',
+    typeImage: '#imageOption',
+    typeTextFontColor: '#scaleTypeTextFontColor',
+    typeTextSelectedFontColor: '#scaleTypeTextSelectedFontColor',
+    typeButtonFontColor: '#scaleTypeButtonFontColor',
+    typeButtonSelectedFontColor: '#scaleTypeButtonSelectedFontColor',
+    typeButtonBgColor: '#scaleTypeButtonBgColor',
+    typeButtonHoverBgColor: '#scaleTypeButtonHoverBgColor',
+}
+
+export default class ScalesSettingsTab {
+    constructor(scales, saveChanges) {
+        this.scales = scales;
+        this.saveChanges = saveChanges;
+
+        this.inputs = this._getSettingsInputs();
+        this.scalesSettingsContainers = document.querySelectorAll('.node-property__scales-type-settings');
+        this._showScalesNumberWarning();
+        document.addEventListener('DOMContentLoaded', this._subscribeToggleSettingsSubsectionAccordingToSelectedType);
+        this._subscribeScaleImagePickers();
+    }
+
+    _getSettingsInputs = () => {
+        let inputs = {};
+        for (let property in ScalesSettingsTabInputSelectors) {
+            let selector = ScalesSettingsTabInputSelectors[property];
+            let inputsArray = document.querySelectorAll(selector);
+            inputs[selector] = inputsArray.length === 1 ? inputsArray[0] : inputsArray;
+        }
+        return inputs;
+    }
+
+    _showScalesNumberWarning = () => {
+        if (this.scales.length > 2) {
+            let warningBlock = document.querySelectorAll(".warning-block--scales-count")[0];
+            warningBlock.classList.remove("hidden");
+        }
+    }
+
+    setValues(settings) {
+        if(settings.hasOwnProperty('position') && settings.position !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.position].value = settings.position;
+        }
+        if(settings.hasOwnProperty('type') && settings.type !== undefined) {
+            this._setType(settings.type);
+        }
+        if(settings.hasOwnProperty('textTypeSettings') && settings.textTypeSettings !== undefined) {
+            this._setTextTypeSettings(settings.textTypeSettings);
+        }
+        if(settings.hasOwnProperty('buttonTypeSettings') && settings.buttonTypeSettings !== undefined) {
+            this._setButtonTypeSettings(settings.buttonTypeSettings);
+        }
+        if(settings.hasOwnProperty('imageTypeSettings') && settings.imageTypeSettings !== undefined) {
+            this._setImageTypeSettings(settings.imageTypeSettings);
+        }
+
+    }
+
+    _setType = (type) => {
+        this.inputs[ScalesSettingsTabInputSelectors.typeText].checked = false;
+        this.inputs[ScalesSettingsTabInputSelectors.typeButton].checked = false;
+        this.inputs[ScalesSettingsTabInputSelectors.typeImage].checked = false;
+
+        switch (type) {
+            case 'text':
+                this.inputs[ScalesSettingsTabInputSelectors.typeText].checked = true;
+                this._toggleSettingsSubsectionAccordingToSelectedType(ScalesSettingsTabInputSelectors.typeText);
+                break;
+            case 'button':
+                this.inputs[ScalesSettingsTabInputSelectors.typeButton].checked = true;
+                this._toggleSettingsSubsectionAccordingToSelectedType(ScalesSettingsTabInputSelectors.typeButton);
+                break;
+            case 'image':
+                this.inputs[ScalesSettingsTabInputSelectors.typeImage].checked = true;
+                this._toggleSettingsSubsectionAccordingToSelectedType(ScalesSettingsTabInputSelectors.typeImage);
+                break;
+        }
+    }
+
+    _setTextTypeSettings = (textTypeSettings) => {
+        if (textTypeSettings.hasOwnProperty('fontColor') && textTypeSettings.fontColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeTextFontColor].value = textTypeSettings.fontColor;
+        }
+        if (textTypeSettings.hasOwnProperty('selectedFontColor') && textTypeSettings.selectedFontColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeTextSelectedFontColor].value = textTypeSettings.selectedFontColor;
+        }
+    }
+
+    _setButtonTypeSettings = (buttonTypeSettings) => {
+        if (buttonTypeSettings.hasOwnProperty('fontColor') && buttonTypeSettings.fontColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeButtonFontColor].value = buttonTypeSettings.fontColor;
+        }
+        if (buttonTypeSettings.hasOwnProperty('selectedFontColor') && buttonTypeSettings.selectedFontColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeButtonSelectedFontColor].value = buttonTypeSettings.selectedFontColor;
+        }
+        if(buttonTypeSettings.hasOwnProperty('bgColor') && buttonTypeSettings.bgColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeButtonBgColor].value = buttonTypeSettings.bgColor;
+        }
+        if(buttonTypeSettings.hasOwnProperty('hoverBgColor') && buttonTypeSettings.hoverBgColor !== undefined) {
+            this.inputs[ScalesSettingsTabInputSelectors.typeButtonHoverBgColor].value = buttonTypeSettings.hoverBgColor;
+        }
+    }
+
+    _setImageTypeSettings = (imageTypeSettings) => {
+        if(imageTypeSettings.hasOwnProperty('left') && imageTypeSettings.left !== undefined) {
+            this._setImageTypeSettingsPositionWise(imageTypeSettings.left, 'left');
+        }
+        if(imageTypeSettings.hasOwnProperty('right') && imageTypeSettings.right !== undefined) {
+            this._setImageTypeSettingsPositionWise(imageTypeSettings.right, 'right');
+        }
+    }
+
+    _setImageTypeSettingsPositionWise = (imageTypeSettingsForPosition, scalePosition) => {
+        if(imageTypeSettingsForPosition.hasOwnProperty('image') && imageTypeSettingsForPosition.image !== undefined) {
+            document.querySelector(`#scaleImage--${scalePosition}__${imageTypeSettingsForPosition.image}`)
+                .classList.add('scale-icon-picker--selected');
+        }
+    }
+
+    getValues() {
+        let positionSelector = this.inputs[ScalesSettingsTabInputSelectors.position];
+
+        return {
+            position: positionSelector.options[positionSelector.selectedIndex].value,
+            containerWidth: parseInt(this.inputs[ScalesSettingsTabInputSelectors.containerWidth].value),
+            type: this._getSelectedScalesType(),
+            textTypeSettings: {
+                fontColor: this.inputs[ScalesSettingsTabInputSelectors.typeTextFontColor].value,
+                selectedFontColor: this.inputs[ScalesSettingsTabInputSelectors.typeTextSelectedFontColor].value
+            },
+            buttonTypeSettings: {
+                fontColor: this.inputs[ScalesSettingsTabInputSelectors.typeButtonFontColor].value,
+                selectedFontColor: this.inputs[ScalesSettingsTabInputSelectors.typeButtonSelectedFontColor].value,
+                bgColor: this.inputs[ScalesSettingsTabInputSelectors.typeButtonBgColor].value,
+                hoverBgColor: this.inputs[ScalesSettingsTabInputSelectors.typeButtonHoverBgColor].value
+            },
+            imageTypeSettings: {
+                left: {
+                    image: this._getSelectedScaleImage('left')
+                }
+            }
+        }
+    }
+
+    _getSelectedScalesType() {
+        const scalesTypeTextInput = this.inputs[ScalesSettingsTabInputSelectors.typeText];
+        const scalesTypeButtonInput = this.inputs[ScalesSettingsTabInputSelectors.typeButton];
+        const scalesTypeImageInput = this.inputs[ScalesSettingsTabInputSelectors.typeImage];
+
+        return scalesTypeTextInput.checked ?
+            scalesTypeTextInput.value : scalesTypeButtonInput.checked ?
+                scalesTypeButtonInput.value : scalesTypeImageInput.value;
+    }
+
+    _getSelectedScaleImage = (scalePosition) => {
+        let imagePickerContainer = document.querySelectorAll(`.node-property--${scalePosition}-scale-image`)[0];
+        let imagePicker = imagePickerContainer.querySelector('.scale-icon-picker--selected');
+
+        return imagePicker.id.substr(imagePicker.id.indexOf('__') + 2);
+    }
+
+    _toggleSettingsSubsectionAccordingToSelectedType(typeInputElementId) {
+        typeInputElementId = typeInputElementId.substr(1); //cut '#'
+        let activeCollapsableSection;
+        try{
+            activeCollapsableSection = document.querySelectorAll(`.controlled-by--${typeInputElementId}`)[0];
+        }
+        catch (e) {
+            console.log("Could not find collapsable section controlled by " + typeInputElementId);
+            return;
+        }
+
+        activeCollapsableSection.classList.remove("hidden");
+
+        this.scalesSettingsContainers.forEach(function(container) {
+            if(container !== activeCollapsableSection) {
+                container.classList.add("hidden");
+            }
+        })
+    }
+
+    _subscribeToggleSettingsSubsectionAccordingToSelectedType = () => {
+        let textOption = document.getElementById("textOption");
+        let buttonOption = document.getElementById("buttonOption");
+        let imageOption = document.getElementById("imageOption");
+
+        let optionInputs = [textOption, buttonOption, imageOption];
+
+        optionInputs.forEach(function (input) {
+            if(input) {
+                input.addEventListener("change", function () {
+                    this._toggleSettingsSubsectionAccordingToSelectedType(input);
+                })
+            }
+        })
+    }
+
+    _subscribeScaleImagePickers = () => {
+        let imagePickers = document.querySelectorAll(".scale-icon-picker");
+        imagePickers.forEach(picker => {
+            picker.addEventListener("click", this._onScaleImagePickerClick);
+            picker.addEventListener("click", this.saveChanges);
+        })
+    }
+
+    _onScaleImagePickerClick = (e) => {
+        let picker = e.currentTarget;
+        let scalePosition = this._getScalePositionFromId(picker.id);
+        let imagePickerContainerForPosition = document.querySelectorAll(`.node-property--${scalePosition}-scale-image`)[0];
+        let imagePickers = imagePickerContainerForPosition.querySelectorAll('.scale-icon-picker');
+        imagePickers.forEach(picker => {
+            picker.classList.remove('scale-icon-picker--selected');
+        });
+        picker.classList.add('scale-icon-picker--selected');
+    }
+
+    _getScalePositionFromId = (pickerId) => {
+        let startIndex = pickerId.indexOf("--") + "--".length;
+        let length = pickerId.indexOf("__") - startIndex;
+
+        return pickerId.substr(startIndex, length);
+    }
+}
+
+
+
