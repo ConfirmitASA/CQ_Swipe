@@ -129,7 +129,7 @@ input#useImagesForCards {
     color: #eeeeee;
 }
 
-.scale-icon-picker:hover > .scale-icon-picker__bg:not(.scale-icon-picker--selected){
+.scale-icon-picker:not(.scale-icon-picker--selected):hover > .scale-icon-picker__bg{
     color: #dddddd;
 }
 
@@ -140,4 +140,8 @@ input#useImagesForCards {
 
 .image-type-settings {
     width: 50%;
+}
+
+.node-property--scales-type ul.option-list {
+    max-width: fit-content;
 }

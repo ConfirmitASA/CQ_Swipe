@@ -12,6 +12,8 @@ export const ScalesSettingsTabInputSelectors = {
     typeButtonHoverBgColor: '#scaleTypeButtonHoverBgColor',
     typeImageIconColorLeft: '#scaleTypeImageIconColor--left',
     typeImageIconColorRight: '#scaleTypeImageIconColor--right',
+    typeImageSelectedIconColorLeft: '#scaleTypeImageSelectedIconColor--left',
+    typeImageSelectedIconColorRight: '#scaleTypeImageSelectedIconColor--right',
     typeImageBgColorLeft: '#scaleTypeImageBgColor--left',
     typeImageBgColorRight: '#scaleTypeImageBgColor--right'
 }
@@ -23,9 +25,13 @@ export default class ScalesSettingsTab {
 
         this.inputs = this._getSettingsInputs();
         this.scalesSettingsContainers = document.querySelectorAll('.node-property__scales-type-settings');
-        this._showScalesNumberWarning();
         document.addEventListener('DOMContentLoaded', this._subscribeToggleSettingsSubsectionAccordingToSelectedType);
         this._subscribeScaleImagePickers();
+
+        if(!this._showScalesNumberError()) {
+            this._addScaleCodesToHeaders();
+            this._showScalesNumberWarning();
+        }
     }
 
     _getSettingsInputs = () => {
@@ -38,11 +44,33 @@ export default class ScalesSettingsTab {
         return inputs;
     }
 
+
+    _showScalesNumberError = () => {
+        if (!this.scales || this.scales.length < 2) {
+            let errorBlock = document.querySelector('#scalesCountError');
+            errorBlock.classList.remove('hidden');
+            const scalesSettingsBlock = document.querySelector('.node-property__content--scales');
+            scalesSettingsBlock.classList.add('hidden');
+
+            return true;
+        }
+
+        return false;
+    }
+
     _showScalesNumberWarning = () => {
         if (this.scales.length > 2) {
-            let warningBlock = document.querySelectorAll(".warning-block--scales-count")[0];
+            let warningBlock = document.querySelector("#scalesCountWarning");
             warningBlock.classList.remove("hidden");
         }
+    }
+
+    _addScaleCodesToHeaders() {
+        const leftScaleLabel = document.querySelector('#scaleLabelLeft');
+        const rightScaleLabel = document.querySelector('#scaleLabelRight');
+
+        leftScaleLabel.innerHTML += ` (code ${this.scales[0].code}):`;
+        rightScaleLabel.innerHTML += ` (code ${this.scales[1].code}):`;
     }
 
     setValues(settings) {
@@ -119,13 +147,15 @@ export default class ScalesSettingsTab {
     }
 
     _setImageTypeSettingsPositionWise = (imageTypeSettingsForPosition, scalePosition) => {
-        let iconColorInput, bgColorInput;
+        let iconColorInput, selectedIconColorInput, bgColorInput;
         if(scalePosition === 'left') {
             iconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorLeft];
+            selectedIconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageSelectedIconColorLeft];
             bgColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorLeft];
         }
         if(scalePosition === 'right') {
             iconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorRight];
+            selectedIconColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageSelectedIconColorRight];
             bgColorInput = this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorRight];
         }
         if(imageTypeSettingsForPosition.hasOwnProperty('image') && imageTypeSettingsForPosition.image !== undefined) {
@@ -134,6 +164,9 @@ export default class ScalesSettingsTab {
         }
         if(imageTypeSettingsForPosition.hasOwnProperty('iconColor') && imageTypeSettingsForPosition.iconColor !== undefined) {
             iconColorInput.value = imageTypeSettingsForPosition.iconColor;
+        }
+        if(imageTypeSettingsForPosition.hasOwnProperty('selectedIconColor') && imageTypeSettingsForPosition.selectedIconColor !== undefined) {
+            selectedIconColorInput.value = imageTypeSettingsForPosition.selectedIconColor;
         }
         if(imageTypeSettingsForPosition.hasOwnProperty('bgColor') && imageTypeSettingsForPosition.bgColor !== undefined) {
             bgColorInput.value = imageTypeSettingsForPosition.bgColor;
@@ -161,11 +194,13 @@ export default class ScalesSettingsTab {
                 left: {
                     image: this._getSelectedScaleImage('left'),
                     iconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorLeft].value,
+                    selectedIconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageSelectedIconColorLeft].value,
                     bgColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorLeft].value
                 },
                 right: {
                     image: this._getSelectedScaleImage('right'),
                     iconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageIconColorRight].value,
+                    selectedIconColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageSelectedIconColorRight].value,
                     bgColor: this.inputs[ScalesSettingsTabInputSelectors.typeImageBgColorRight].value
                 }
             }
@@ -186,11 +221,11 @@ export default class ScalesSettingsTab {
         let imagePickerContainer = document.querySelectorAll(`.node-property--${scalePosition}-scale-image`)[0];
         let imagePicker = imagePickerContainer.querySelector('.scale-icon-picker--selected');
 
-        return imagePicker.id.substr(imagePicker.id.indexOf('__') + 2);
+        return imagePicker.id.substring(imagePicker.id.indexOf('__') + 2);
     }
 
     _toggleSettingsSubsectionAccordingToSelectedType(typeInputElementId) {
-        typeInputElementId = typeInputElementId.substr(1); //cut '#'
+        typeInputElementId = typeInputElementId.substring(1); //cut '#'
         let activeCollapsableSection;
         try{
             activeCollapsableSection = document.querySelectorAll(`.controlled-by--${typeInputElementId}`)[0];

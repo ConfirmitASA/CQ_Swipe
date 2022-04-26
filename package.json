@@ -8,21 +8,26 @@
     "build:design": "parcel build design/index.html -d dist/design --no-source-maps --public-url ./",
     "build:runtime": "parcel build runtime/loader.js -d dist/runtime --no-source-maps",
     "build:clean": "rimraf dist && rimraf dist-bundle",
-    "build:zip": "mkdirp dist-bundle && cd dist && bestzip ../dist-bundle/bundle.zip *",
-    "build:copy-static": "copyfiles metadata.json design/icon.svg runtime/styles.css dist/"
+    "build:zip": "mkdirp dist-bundle && cd dist && bestzip ../SwipeCards.zip *",
+    "build:copy-static": "copyfiles metadata.json design/icon.svg runtime/styles.css dev/* dist/"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
     "bestzip": "^2.1.7",
     "copyfiles": "^2.4.1",
     "mkdirp": "^1.0.4",
-    "parcel-bundler": "^1.12.4",
+    "parcel-bundler": "^1.12.5",
     "rimraf": "^2.7.1"
   },
   "dependencies": {
-    "bootstrap-icons": "^1.5.0"
-  }
+    "bootstrap-icons": "^1.5.0",
+    "jquery": "^3.6.0",
+    "watch": "^1.0.2"
+  },
+  "type": "module"
 }

@@ -1,8 +1,10 @@
 import CardsSettingsTab from "../dev/design-tabs/cards-settings-tab";
 import ScalesSettingsTab from "../dev/design-tabs/scales-settings-tab";
+import VisualCuesSettingsTab from "../dev/design-tabs/visual-cues-settings-tab";
 
 let cardsSettingsTab;
 let scalesSettingsTab;
+let visualCuesSettingsTab;
 
 function onInit(customSettings, uiSettings, questionSettings, projectSettings) {
     let cards = questionSettings.answers;
@@ -10,6 +12,7 @@ function onInit(customSettings, uiSettings, questionSettings, projectSettings) {
 
     cardsSettingsTab = new CardsSettingsTab(cards);
     scalesSettingsTab = new ScalesSettingsTab(scales, saveChanges);
+    visualCuesSettingsTab = new VisualCuesSettingsTab();
 }
 customQuestion.onInit = onInit;
 
@@ -23,14 +26,18 @@ function setValues(settings) {
     if(settings.hasOwnProperty('scales')) {
         scalesSettingsTab.setValues(settings.scales);
     }
+
+    if(settings.hasOwnProperty('visualCues')) {
+        visualCuesSettingsTab.setValues(settings.visualCues);
+    }
 }
 customQuestion.onSettingsReceived = setValues;
 
 function saveChanges() {
     let settings = {};
-
     settings.cards = cardsSettingsTab.getValues();
     settings.scales = scalesSettingsTab.getValues();
+    settings.visualCues = visualCuesSettingsTab.getValues();
 
     let hasError = false;
     customQuestion.saveChanges(settings, hasError);
