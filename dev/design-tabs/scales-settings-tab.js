@@ -39,7 +39,7 @@ export default class ScalesSettingsTab {
         for (let property in ScalesSettingsTabInputSelectors) {
             let selector = ScalesSettingsTabInputSelectors[property];
             let inputsArray = document.querySelectorAll(selector);
-            inputs[selector] = inputsArray.length === 1 ? inputsArray[0] : inputsArray;
+            inputs[selector] = selector.indexOf('#') !== -1 ? inputsArray[0] : inputsArray;
         }
         return inputs;
     }
@@ -218,6 +218,7 @@ export default class ScalesSettingsTab {
     }
 
     _getSelectedScaleImage = (scalePosition) => {
+        debugger;
         let imagePickerContainer = document.querySelectorAll(`.node-property--${scalePosition}-scale-image`)[0];
         let imagePicker = imagePickerContainer.querySelector('.scale-icon-picker--selected');
 

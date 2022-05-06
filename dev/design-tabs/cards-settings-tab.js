@@ -60,7 +60,8 @@ export default class CardsSettingsTab {
 
     _getImageURLs = () => {
         let imgURLs = [];
-        this.inputs[CardsSettingsTabInputSelectors.urls].forEach((input) => {
+        let urlInputs = this.inputs[CardsSettingsTabInputSelectors.urls];
+        urlInputs.forEach((input) => {
             imgURLs.push({id: input.id, url: input.value});
         });
 
@@ -72,7 +73,7 @@ export default class CardsSettingsTab {
         for (let property in CardsSettingsTabInputSelectors) {
             let selector = CardsSettingsTabInputSelectors[property];
             let inputsArray = document.querySelectorAll(selector);
-            inputs[selector] = inputsArray.length === 1 ? inputsArray[0] : inputsArray;
+            inputs[selector] = selector.indexOf('#') !== -1 ? inputsArray[0] : inputsArray;
         }
         return inputs;
     }
