@@ -63,14 +63,26 @@ export default class TinderSwipe extends QuestionWithAnswersView {
     }
     //endregion
 
-    _setDefaultSettings() {
-
+    _init(){
+        const devErrors = this._checkRequiredOptions();
+        if (devErrors.length > 0) {
+            document.getElementById(this._question.id).innerHTML = '<div style="color: red;">' + devErrors.join('<br />') + '</div>';
+        } else {
+            this._render();
+            this._attachHandlersToDom();
+            this._question.validationCompleteEvent.on(this._showAnswerError.bind(this));
+        }
     }
 
-    _init(){
-        this._render();
-        this._attachHandlersToDom();
-        this._question.validationCompleteEvent.on(this._showAnswerError.bind(this));
+    _checkRequiredOptions() {
+        let errorMessages = [];
+        if(!!this.answers && this.answers.length === 0) {
+            errorMessages.push('Card Swipe question has no answers.');
+        } else if(!this._question.scales || this._question.scales.length !== 2) {
+            errorMessages.push('Card Swipe question should have exactly two scales.');
+        }
+
+        return errorMessages;
     }
 
     _render() {
