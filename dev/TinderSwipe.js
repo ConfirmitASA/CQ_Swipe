@@ -1,6 +1,7 @@
 import VisualCues from "./VisualCues";
 import ScalesComponent from "./scales/scales-component.js";
 import CardsComponent from "./cards/cards-component.js";
+import {DefaultSettingsManager} from "./default-settings-manager.js";
 
 const QuestionWithAnswersView = Confirmit.pageView.questionViewTypes.QuestionWithAnswersView;
 
@@ -10,13 +11,14 @@ export default class TinderSwipe extends QuestionWithAnswersView {
         this._draggingAnswer = null;
         this._draggingAnswerNodeOffset = null;
         this._currentAnswerIndex = 0;
-        this._cardsComponent = new CardsComponent(question, customSettings.cards);
-        this._scalesComponent = new ScalesComponent(question, customSettings.scales);
-        this._visualCues = new VisualCues(question, customSettings);
-        this.settings = customSettings;
+        this._settings = DefaultSettingsManager.getValidSettings(customSettings);
+        this._cardsComponent = new CardsComponent(question, this._settings.cards);
+        this._scalesComponent = new ScalesComponent(question, this._settings.scales);
+        this._visualCues = new VisualCues(question, this._settings);
         this._init();
     }
 
+    //region Getters
     _getAnswerId(answer) {
         return `${this._question.id}_${answer.code}`;
     }
@@ -26,7 +28,7 @@ export default class TinderSwipe extends QuestionWithAnswersView {
             return null;
         }
 
-        return this.answers[this._currentAnswerIndex].code
+        return this.answers[this._currentAnswerIndex].code;
     }
 
     _getCurrentAnswerNode() {
@@ -59,6 +61,11 @@ export default class TinderSwipe extends QuestionWithAnswersView {
         const {left, width} = node[0].getBoundingClientRect();
         return (left + width/2);
     }
+    //endregion
+
+    _setDefaultSettings() {
+
+    }
 
     _init(){
         this._render();
@@ -90,7 +97,7 @@ export default class TinderSwipe extends QuestionWithAnswersView {
 
         if(!this._cardsComponent.hasNonScaledAnswers()) {
             this._showFinalCard();
-            this.settings.visualCues.enableArrows = 'false';
+            this._settings.visualCues.enableArrows = 'false';
         } else {
             this._scalesComponent.render();
         }
