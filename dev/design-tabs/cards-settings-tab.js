@@ -112,7 +112,7 @@ export default class CardsSettingsTab {
     _createCardImageContainerNode = (cardCode) => {
         let container = document.createElement("div");
         container.className = "image-container";
-        container.innerHTML = `${cardCode}: `;
+        container.innerHTML = `<span class="image-code">${cardCode}: </span>`;
 
         let imageURLInput = document.createElement("input");
         imageURLInput.id = `image_${cardCode}`;

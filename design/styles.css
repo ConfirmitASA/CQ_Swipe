@@ -89,10 +89,19 @@ input#useImagesForCards {
 .co-toggle {
     margin-top: 5px;
 }
+
 .image-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     padding-bottom: 5px;
 }
-
+.image-container input {
+    margin-left: 5px;
+}
+.image-code {
+    margin-right: auto;
+}
 .image-preview {
     width: 30px;
     height: 30px;
@@ -103,7 +112,6 @@ input#useImagesForCards {
 .zoom {
     transition: transform .3s;
 }
-
 .zoom:hover {
     -ms-transform: scale(4); /* IE 9 */
     -webkit-transform: scale(4); /* Safari 3-8 */
