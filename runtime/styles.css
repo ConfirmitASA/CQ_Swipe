@@ -2,6 +2,7 @@
 
 .cf-tinder-grid__answers {
     position: relative;
+    overflow: hidden;
 }
 
 .cf-tinder-grid-card {
