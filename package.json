@@ -9,7 +9,7 @@
     "build:runtime": "parcel build runtime/loader.js -d dist/runtime --no-source-maps",
     "build:clean": "rimraf dist && rimraf dist-bundle",
     "build:zip": "mkdirp dist-bundle && cd dist && bestzip ../SwipeCards.zip *",
-    "build:copy-static": "copyfiles metadata.json design/icon.svg runtime/styles.css dev/* dist/"
+    "build:copy-static": "copyfiles metadata.json design/icon.svg design/empty-preview-image.svg runtime/styles.css dev/* dist/"
   },
   "author": "",
   "license": "ISC",

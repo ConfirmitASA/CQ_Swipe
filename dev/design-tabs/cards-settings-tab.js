@@ -130,12 +130,15 @@ export default class CardsSettingsTab {
 
     loadImagePreview(inputElement) {
         const inputURL = inputElement.value;
+        const previewContainer = document.querySelector('#' + inputElement.id + ' + img');
 
         if(inputURL === "") {
+            previewContainer.setAttribute('src', 'empty-preview-image.svg');
+            previewContainer.classList.remove('zoom');
             return;
         }
 
-        const previewContainer = document.querySelector("#" + inputElement.id + " + img");
-        previewContainer.setAttribute("src", inputURL);
+        previewContainer.setAttribute('src', inputURL);
+        previewContainer.classList.add('zoom');
     }
 }
