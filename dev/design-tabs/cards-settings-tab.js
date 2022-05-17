@@ -1,4 +1,5 @@
 import {ScalesSettingsTabInputSelectors} from "./scales-settings-tab";
+import SettingsTab from "./settings-tab.js";
 
 export const CardsSettingsTabInputSelectors = {
     width: '#cardWidth',
@@ -9,8 +10,9 @@ export const CardsSettingsTabInputSelectors = {
     urls: '.image-input--card'
 }
 
-export default class CardsSettingsTab {
+export default class CardsSettingsTab extends SettingsTab {
     constructor(answers) {
+        super(CardsSettingsTabInputSelectors);
         this.answers = answers;
         this.renderCardImageInputs();
 
@@ -66,16 +68,6 @@ export default class CardsSettingsTab {
         });
 
         return imgURLs;
-    }
-
-    _getSettingsInputs = () => {
-        let inputs = {};
-        for (let property in CardsSettingsTabInputSelectors) {
-            let selector = CardsSettingsTabInputSelectors[property];
-            let inputsArray = document.querySelectorAll(selector);
-            inputs[selector] = selector.indexOf('#') !== -1 ? inputsArray[0] : inputsArray;
-        }
-        return inputs;
     }
 
     _subscribeUseImagesCheckboxToggleSubsection = () => {

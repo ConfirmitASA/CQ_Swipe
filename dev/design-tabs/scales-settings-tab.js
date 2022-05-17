@@ -1,3 +1,5 @@
+import SettingsTab from "./settings-tab.js";
+
 export const ScalesSettingsTabInputSelectors = {
     position: '#scalesPosition',
     containerWidth: '#cardWidth',
@@ -18,8 +20,9 @@ export const ScalesSettingsTabInputSelectors = {
     typeImageBgColorRight: '#scaleTypeImageBgColor--right'
 }
 
-export default class ScalesSettingsTab {
+export default class ScalesSettingsTab extends SettingsTab {
     constructor(scales, saveChanges) {
+        super(ScalesSettingsTabInputSelectors);
         this.scales = scales;
         this.saveChanges = saveChanges;
 
@@ -33,17 +36,6 @@ export default class ScalesSettingsTab {
             this._showScalesNumberWarning();
         }
     }
-
-    _getSettingsInputs = () => {
-        let inputs = {};
-        for (let property in ScalesSettingsTabInputSelectors) {
-            let selector = ScalesSettingsTabInputSelectors[property];
-            let inputsArray = document.querySelectorAll(selector);
-            inputs[selector] = selector.indexOf('#') !== -1 ? inputsArray[0] : inputsArray;
-        }
-        return inputs;
-    }
-
 
     _showScalesNumberError = () => {
         if (!this.scales || this.scales.length < 2) {
@@ -218,7 +210,6 @@ export default class ScalesSettingsTab {
     }
 
     _getSelectedScaleImage = (scalePosition) => {
-        debugger;
         let imagePickerContainer = document.querySelectorAll(`.node-property--${scalePosition}-scale-image`)[0];
         let imagePicker = imagePickerContainer.querySelector('.scale-icon-picker--selected');
 

@@ -1,10 +1,14 @@
+import SettingsTab from "./settings-tab.js";
+
 export const VisualCuesSettingsTabInputSelectors = {
     enableArrows: '#enableArrows',
-    enableChosenScaleOnTop: '#enableChosenScaleOnTop'
+    enableChosenScaleOnTop: '#enableChosenScaleOnTop',
+    enableSelectedScaleOnNextCard: '#enableSelectedScaleOnNextCard'
 }
 
-export default class VisualCuesSettingsTab {
+export default class VisualCuesSettingsTab extends SettingsTab {
     constructor() {
+        super(VisualCuesSettingsTabInputSelectors);
         this.inputs = this._getSettingsInputs();
     }
 
@@ -12,6 +16,7 @@ export default class VisualCuesSettingsTab {
         return {
             enableArrows: this.inputs[VisualCuesSettingsTabInputSelectors.enableArrows].checked,
             enableChosenScaleOnTop: this.inputs[VisualCuesSettingsTabInputSelectors.enableChosenScaleOnTop].checked,
+            enableSelectedScaleOnNextCard: this.inputs[VisualCuesSettingsTabInputSelectors.enableSelectedScaleOnNextCard].checked,
         }
     }
 
@@ -22,17 +27,8 @@ export default class VisualCuesSettingsTab {
         if (settings.hasOwnProperty('enableChosenScaleOnTop') && settings.enableChosenScaleOnTop !== undefined) {
             this.inputs[VisualCuesSettingsTabInputSelectors.enableChosenScaleOnTop].checked = settings.enableChosenScaleOnTop;
         }
-    }
-
-    _getSettingsInputs = () => {
-        let inputs = {};
-        for (let property in VisualCuesSettingsTabInputSelectors) {
-            let selector = VisualCuesSettingsTabInputSelectors[property];
-            let inputsArray = document.querySelectorAll(selector);
-            inputs[selector] = inputsArray.length === 1 ? inputsArray[0] : inputsArray;
+        if (settings.hasOwnProperty('enableSelectedScaleOnNextCard') && settings.enableSelectedScaleOnNextCard !== undefined) {
+            this.inputs[VisualCuesSettingsTabInputSelectors.enableSelectedScaleOnNextCard].checked = settings.enableSelectedScaleOnNextCard;
         }
-        return inputs;
     }
-
-
 }
