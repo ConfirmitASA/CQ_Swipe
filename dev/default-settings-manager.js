@@ -38,7 +38,8 @@ const DEFAULT_SETTINGS = {
     },
     "visualCues": {
         "enableArrows": false,
-        "enableChosenScaleOnTop": false
+        "enableChosenScaleOnTop": false,
+        "enableSelectedScaleOnNextCard": false
     }
 }
 

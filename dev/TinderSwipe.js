@@ -228,7 +228,7 @@ export default class TinderSwipe extends QuestionWithAnswersView {
             this._setScaleStyle(scaleNode, scale.code === selectedScaleCode);
         });
 
-        this._visualCues.toggleChosenScaleOnTop();
+        this._visualCues.toggleSelectedScaleOnTop();
     }
 
     _setScaleStyle(scaleNode, isSelected) {
@@ -244,19 +244,20 @@ export default class TinderSwipe extends QuestionWithAnswersView {
             'opacity' : ''
         })
         draggingNode.removeClass('cf-tinder-grid-answer--dragging');
-        const selectedScaleCode = this._getSelectedScaleCode();
+        const selectedScaleCode = this._getSelectedScaleCode(this._shiftFromMiddleToSelecet);
 
         this._question.scales.forEach(scale => {
             let scaleNode = this._getScaleNode(scale.code);
             this._setScaleStyle(scaleNode, false);
         });
 
-        this._visualCues.toggleChosenScaleOnTop();
+        this._visualCues.toggleSelectedScaleOnTop();
 
         if(selectedScaleCode !== null){
             this._question.setValue(this._draggingAnswer.code, selectedScaleCode);
             draggingNode.addClass('hidden');
             //draggingNode.remove();
+            this._visualCues.showSelectedScaleOnNextCard(this._draggingAnswer.code, selectedScaleCode);
         }
 
         this._draggingAnswer = null;
@@ -312,7 +313,7 @@ export default class TinderSwipe extends QuestionWithAnswersView {
             this._setScaleStyle(scaleNode, scale.code === this._question.values[currentAnswer.code]);
         });
 
-        this._visualCues.toggleChosenScaleOnTop();
+        this._visualCues.toggleSelectedScaleOnTop();
     }
 
     _updateAnswerNodes({values = []}){
